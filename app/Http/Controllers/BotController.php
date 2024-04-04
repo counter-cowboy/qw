@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use WeStacks\TeleBot\BotManager;
 use WeStacks\TeleBot\Laravel\TeleBot;
+use function Sodium\add;
 
 class BotController extends Controller
 {
@@ -14,24 +17,51 @@ class BotController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    const API_TOKEN = '5921769353:AAH5-UgHdLYfubuKSyZffWm2Y-sKsLsDGjY';
-    const CHANNEL_ID = -1002041262507 ;
+      const CHANNEL_ID = -1002041262507;
 
     public function __invoke()
     {
-
-        $message = TeleBot::sendMessage([
-            'chat_id' => -1002041262507 ,
-            'text' => '@cowboyru Oleg112233 Test message',
-
+        Comment::find()->where();
+        $adresates = Employee::all();
+        Comment::create([
+            'task_id'=>1,
+            'employee_id'=>1,
+           'comment'=>'2 Some new comment',
         ]);
-        $update = TeleBot::getUpdates();
 
+        foreach ($adresates as $address) {
+            $name = $address['nickname'];
+            $task = $address->tasks()->get();
 
-        // $updateJson=$update->toJson();
-//        $updateToArray=$update->toArray();
+            foreach ($task as $item) {
+                $taskTitle = $item['title'];
+                $letter = TeleBot::sendMessage([
+                    'chat_id' => -1002041262507,
+                    'text' => "$name whats up with task $taskTitle ?",
+                ]);
+            }
+        }
+
+        $updateId = 0;
 
         echo "<pre>";
-        print_r($update);
+
+        while (true) {
+            $update = TeleBot::getUpdates([
+                'offset' => $updateId
+            ]);
+            $updateId++;
+            print_r($update);
+            sleep(1);
+        }
+
+
+
+
+//        $message = TeleBot::sendMessage([
+//            'chat_id' => -1002041262507 ,
+//            'text' => '@cowboyru Oleg112233 Test message', ]);
+
+
     }
 }

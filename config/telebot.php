@@ -44,9 +44,9 @@ return [
             ],
 
             'poll' => [
-                // 'limit'             => 100,
-                // 'timeout'           => 0,
-                // 'allowed_updates'   => ["message", "edited_channel_post", "callback_query"]
+                 'limit'             => 100,
+                 'timeout'           => 0,
+                 'allowed_updates'   => ["message", ]//"edited_channel_post", "callback_query"
             ],
 
             'handlers' => [
