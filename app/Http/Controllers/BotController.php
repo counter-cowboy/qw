@@ -15,13 +15,13 @@ class BotController extends Controller
      * @return \Illuminate\Http\Response
      */
     const API_TOKEN = '5921769353:AAH5-UgHdLYfubuKSyZffWm2Y-sKsLsDGjY';
-    const CHANNEL_ID = -1002041262507;
+    const CHANNEL_ID = -1002041262507 ;
 
     public function __invoke()
     {
 
         $message = TeleBot::sendMessage([
-            'chat_id' => -1002041262507,
+            'chat_id' => -1002041262507 ,
             'text' => '@cowboyru Oleg112233 Test message',
 
         ]);
