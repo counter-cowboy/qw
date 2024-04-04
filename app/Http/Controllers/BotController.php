@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Employee;
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use WeStacks\TeleBot\BotManager;
 use WeStacks\TeleBot\Laravel\TeleBot;
-use function Sodium\add;
 
 class BotController extends Controller
 {
@@ -17,50 +18,45 @@ class BotController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-      const CHANNEL_ID = -1002041262507;
+    const CHANNEL_ID = -1002041262507;
 
     public function __invoke()
     {
-        Comment::find()->where();
-        $adresates = Employee::all();
         Comment::create([
-            'task_id'=>1,
-            'employee_id'=>1,
-           'comment'=>'2 Some new comment',
+            'task_id'=>3,
+            'employee_id'=> 2,
+            'comment'=>'new comment for serg'
         ]);
 
-        foreach ($adresates as $address) {
-            $name = $address['nickname'];
-            $task = $address->tasks()->get();
+        $adresates = Employee::all();
 
-            foreach ($task as $item) {
-                $taskTitle = $item['title'];
+
+        foreach ($adresates as $address) {
+            $empId = $address['id'];
+
+            $latestTask = DB::table('comments')
+                ->where('employee_id', $empId)
+                ->orderBy('updated_at', 'desc')
+                ->first();
+
+            if ($latestTask) {
+                $taskId = $latestTask->task_id;
+
+                $userTaskByLastComment = Task::find($taskId);
+
+                $userTask = $userTaskByLastComment->title;
+
+                $name = $address['nickname'];
+//                $task = $address->tasks()->get();
+
                 $letter = TeleBot::sendMessage([
                     'chat_id' => -1002041262507,
-                    'text' => "$name whats up with task $taskTitle ?",
-                ]);
+                    'text' => "$name whats up with task $userTask ?"]);
             }
+            else
+                $taskId=null;
         }
 
-        $updateId = 0;
-
-        echo "<pre>";
-
-        while (true) {
-            $update = TeleBot::getUpdates([
-                'offset' => $updateId
-            ]);
-            $updateId++;
-            print_r($update);
-            sleep(1);
-        }
-
-
-
-
-//        $message = TeleBot::sendMessage([
-//            'chat_id' => -1002041262507 ,
-//            'text' => '@cowboyru Oleg112233 Test message', ]);
 
 
     }
